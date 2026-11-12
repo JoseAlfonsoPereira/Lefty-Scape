@@ -5,7 +5,7 @@ import javax.imageio.ImageIO;
 
 public class Tarta {
 
-    static final double ESCALA = (0.05 / 2) * 4;   // tamaño 5% en Scratch, imagen al doble de resolución
+    static final double ESCALA = (0.05 / 2) * Juego.K;   // tamaño 5% en Scratch, imagen al doble de resolución
 
     double x = -22, y = 110;                 // posición inicial de tu Scratch
     boolean visible = true;
@@ -34,7 +34,7 @@ public class Tarta {
     // Rectángulo que ocupa en pantalla (para detectar colisiones)
     public Rectangle area() {
         return new Rectangle(Juego.pantallaX(x) - ancho / 2,
-                            Juego.pantallaY(y) - alto / 2, ancho, alto);
+                             Juego.pantallaY(y) - alto / 2, ancho, alto);
     }
 
     public void dibujar(Graphics2D g) {

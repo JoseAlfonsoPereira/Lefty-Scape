@@ -11,6 +11,12 @@ public class Juego extends JPanel implements ActionListener {
     static final int ANCHO = 1920;
     static final int ALTO = 1080;
 
+    // Zoom: píxeles de pantalla por cada unidad del escenario de Scratch (480x360)
+    static final double K = 3;
+    static final int MAPA_ANCHO = (int) (480 * K);          // 1440
+    static final int MAPA_ALTO = (int) (360 * K);           // 1080
+    static final int MARGEN_X = (ANCHO - MAPA_ANCHO) / 2;   // 240: barras negras a los lados
+
     enum Estado { FASE_NINO, GLITCH, FASE_LEFTY, JUMPSCARE, VICTORIA }
     Estado estado = Estado.FASE_NINO;
 
@@ -25,6 +31,8 @@ public class Juego extends JPanel implements ActionListener {
     Nino nino = new Nino();
     Tarta tarta = new Tarta();
     HombreMorado hombre = new HombreMorado();
+    Lefty lefty = new Lefty();
+    Mapa mapa = new Mapa();
     Set<Integer> teclas = new HashSet<>();
 
     // Control de la transición cuando pierdes
@@ -65,8 +73,9 @@ public class Juego extends JPanel implements ActionListener {
         }
     }
 
-    static int pantallaX(double x) { return (int) (ANCHO / 2 + x); }
-    static int pantallaY(double y) { return (int) (ALTO / 2 - y); }
+    // Conversión de coordenadas de Scratch (centro = 0,0, Y hacia arriba) a píxeles de pantalla
+    static int pantallaX(double x) { return (int) (ANCHO / 2 + x * K); }
+    static int pantallaY(double y) { return (int) (ALTO / 2 - y * K); }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -79,6 +88,8 @@ public class Juego extends JPanel implements ActionListener {
             actualizarFaseNino();
         } else if (estado == Estado.GLITCH) {
             actualizarGlitch();
+        } else if (estado == Estado.FASE_LEFTY) {
+            actualizarFaseLefty();
         }
 
         // Escenario: "si Vidas = 0 → esperar 4.4 → sonido FNAF song"
@@ -147,6 +158,15 @@ public class Juego extends JPanel implements ActionListener {
         }
     }
 
+    void actualizarFaseLefty() {
+        // "esperar 4.4 → mostrar": Lefty y las paredes aparecen a los 4.4 s
+        if (!lefty.visible && msDesdeDerrota() >= 4400) {
+            lefty.aparecer();
+            mapa.activo = true;
+        }
+        lefty.actualizar(teclas, mapa);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -161,7 +181,8 @@ public class Juego extends JPanel implements ActionListener {
             nino.dibujar(g2);
             hombre.dibujar(g2);
             g2.setColor(Color.WHITE);
-            g2.drawString("Tartas: " + tartas + "   Vidas: " + vidas, 10, 20);
+            g2.setFont(new Font("Arial", Font.BOLD, 32));
+            g2.drawString("Tartas: " + tartas + "   Vidas: " + vidas, MARGEN_X + 20, 50);
 
         } else if (estado == Estado.GLITCH) {
             long ms = msDesdeDerrota();
@@ -172,11 +193,14 @@ public class Juego extends JPanel implements ActionListener {
 
         } else if (estado == Estado.FASE_LEFTY) {
             dibujarImagen(g2, fondoLefty);
+            lefty.dibujar(g2);
+            mapa.dibujar(g2);        // las paredes van encima, como en tus capas de Scratch
         }
     }
 
+    // Dibuja una imagen de fondo ocupando todo el mapa (1440x1080, centrado)
     void dibujarImagen(Graphics2D g2, Image img) {
-        if (img != null) g2.drawImage(img, 0, 0, ANCHO, ALTO, null);
+        if (img != null) g2.drawImage(img, MARGEN_X, 0, MAPA_ANCHO, MAPA_ALTO, null);
     }
 
     public static void main(String[] args) {

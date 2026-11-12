@@ -4,8 +4,8 @@ import javax.imageio.ImageIO;
 
 public class HombreMorado {
 
-    static final double ESCALA = (0.12 / 2) * 4;   // tamaño 12% en Scratch, imagen al doble de resolución
-    static final double VELOCIDAD = 1.44;    // más lento que el Niño (0.6), si no sería imposible
+    static final double ESCALA = (0.12 / 2) * Juego.K;   // tamaño 12% en Scratch, imagen al doble de resolución
+    static final double VELOCIDAD = 0.36;    // más lento que el Niño (0.6), si no sería imposible
 
     // Centro de rotación de cada disfraz, en píxeles de la imagen original
     static final int[] CENTRO_X = {70, 70};

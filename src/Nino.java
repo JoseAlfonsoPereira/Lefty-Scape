@@ -7,11 +7,11 @@ import javax.imageio.ImageIO;
 public class Nino {
 
     // En Scratch el Niño tiene tamaño 9% y sus imágenes son el doble de resolución
-    static final double ESCALA = (0.09 / 2) * 4;
-    static final double VELOCIDAD = 2.4;   // píxeles por fotograma (ver nota abajo)
+    static final double ESCALA = (0.09 / 2) * Juego.K;
+    static final double VELOCIDAD = 0.6;   // unidades de Scratch por fotograma
 
-    // Límites por donde puede andar (de momento, un rectángulo aproximado)
-    static final int LIM_IZQ = -616, LIM_DER = 516, LIM_ABAJO = -288, LIM_ARRIBA = 476;
+    // Límites por donde puede andar (de momento, un rectángulo aproximado, en unidades de Scratch)
+    static final int LIM_IZQ = -154, LIM_DER = 129, LIM_ABAJO = -72, LIM_ARRIBA = 119;
 
     // Posición en coordenadas de Scratch (centro de la pantalla = 0,0)
     double x = -22, y = -69;
@@ -56,7 +56,7 @@ public class Nino {
         }
     }
 
-        // Rectángulo que ocupa en pantalla (para detectar colisiones)
+    // Rectángulo que ocupa en pantalla (para detectar colisiones)
     public Rectangle area() {
         return new Rectangle(Juego.pantallaX(x) - ancho / 2,
                              Juego.pantallaY(y) - alto / 2, ancho, alto);
